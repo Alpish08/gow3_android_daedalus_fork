@@ -1,5 +1,11 @@
 # God of War III — Daedalus Fork · Bionic
 
+> **Performance fork (unmaintained):** this is a one-time fork of
+> [erickmendes22/gow3_android_daedalus_fork](https://github.com/erickmendes22/gow3_android_daedalus_fork)
+> with GPU optimizations (about +33% FPS in heavy rooms on a Retroid Pocket 6 / Snapdragon 8 Gen 2),
+> a steam/heat-haze fix and a hidden menu pill. I made it to enjoy my own playthrough and don't plan
+> to continue development. See [PERF-FORK.md](PERF-FORK.md) for what changed and how it was tested.
+
 **Version: 2.1.6-daedalus.4-bionic**
 
 [Português (Brasil)](README.md) | **English**
