@@ -116,7 +116,7 @@ public final class GameActivity extends Activity {
         if (bionicRuntime()) main.post(hudConfigPoll);
     }
 
-    private boolean bionicRuntime() { return "com.gow3.android.bionic".equals(getPackageName()); }
+    private boolean bionicRuntime() { return "com.gow3.android.bionic.fork".equals(getPackageName()); }
 
     private boolean runtimeReady;
 
@@ -245,8 +245,8 @@ public final class GameActivity extends Activity {
                 : getSharedPreferences("gow3",MODE_PRIVATE).getBoolean("performance_hud",false));
 
         handle=new View(this);
-        GradientDrawable grip=new GradientDrawable(); grip.setColor(0x80c6ad76); grip.setCornerRadius(dp(4));
-        handle.setBackground(grip); handle.setContentDescription("Open game menu");
+        // Performance fork: the menu handle stays clickable but draws no gold pill over the game.
+        handle.setContentDescription("Open game menu");
         screen.addView(handle,frame(dp(4),dp(44),Gravity.LEFT|Gravity.CENTER_VERTICAL));
         handle.setOnClickListener(v -> openDrawer());
 

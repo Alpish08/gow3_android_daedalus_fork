@@ -19,10 +19,11 @@ android {
         versionName = "2.1.8"
         manifestPlaceholders["appLabel"] = "@string/app_name"
         if (bionicRuntime) {
-            applicationId = "com.gow3.android.bionic"
+            // Performance fork: its own application id, so it installs next to the original app.
+            applicationId = "com.gow3.android.bionic.fork"
             minSdk = 30
-            versionName = "2.1.8-bionic"
-            manifestPlaceholders["appLabel"] = "God of War III — Daedalus Fork"
+            versionName = "2.1.8-bionic-perf"
+            manifestPlaceholders["appLabel"] = "GoW III Daedalus (perf fork)"
         }
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
