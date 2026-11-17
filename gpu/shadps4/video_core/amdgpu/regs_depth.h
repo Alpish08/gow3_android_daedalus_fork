@@ -5,6 +5,7 @@
 
 #include "common/assert.h"
 #include "common/types.h"
+#include "video_core/amdgpu/gow3_msaa.h"
 #include "video_core/amdgpu/tiling.h"
 
 namespace AmdGpu {
@@ -265,7 +266,8 @@ struct DepthBuffer {
     }
 
     u32 NumSamples() const {
-        return 1u << z_info.num_samples; // spec doesn't say it is a log2
+        // spec doesn't say it is a log2
+        return ForceSingleSample() ? 1u : 1u << z_info.num_samples;
     }
 
     u32 NumBits() const {

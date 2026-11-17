@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "video_core/amdgpu/gow3_msaa.h"
 #include "video_core/amdgpu/pixel_format.h"
 #include "video_core/amdgpu/tiling.h"
 
@@ -221,7 +222,7 @@ struct ColorBuffer {
     }
 
     u32 NumSamples() const {
-        return 1 << attrib.num_fragments_log2;
+        return ForceSingleSample() ? 1u : 1u << attrib.num_fragments_log2;
     }
 
     u32 BaseSlice() const {

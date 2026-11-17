@@ -238,11 +238,15 @@ Id EmitImageRead(EmitContext& ctx, IR::Inst* inst, u32 handle, Id coords, Id lod
                 operands.Add(spv::ImageOperandsMask::Sample, wrapped_ms);
             }
         } else {
-            if (Sirit::ValidId(ms)) {
+            if (Sirit::ValidId(ms) && !AmdGpu::ForceSingleSample()) {
                 LOG_ERROR(Render_Recompiler, "image is not MS but ms operand is provided");
             }
             operands.Add(spv::ImageOperandsMask::Lod, lod);
-            operands.Add(spv::ImageOperandsMask::Sample, ms);
+            // fork: with GOW3_MSAA=0 the guest's MSAA textures are single-sample 2D images and
+            // the only sample is the one a sample-indexed read wants.
+            if (!AmdGpu::ForceSingleSample()) {
+                operands.Add(spv::ImageOperandsMask::Sample, ms);
+            }
         }
         texel = ctx.OpImageFetch(color_type, image, coords, operands.mask, operands.operands);
     } else {

@@ -6,6 +6,7 @@
 #include "common/alignment.h"
 #include "common/assert.h"
 #include "common/bit_field.h"
+#include "video_core/amdgpu/gow3_msaa.h"
 #include "video_core/amdgpu/pixel_format.h"
 #include "video_core/amdgpu/tiling.h"
 
@@ -238,15 +239,21 @@ struct Image {
         return slices;
     }
 
+    /// The descriptor's own type: MSAA descriptors keep the sample count in last_level.
+    bool IsMsaaDescriptor() const noexcept {
+        const auto raw = static_cast<ImageType>(type);
+        return raw == ImageType::Color2DMsaa || raw == ImageType::Color2DMsaaArray;
+    }
+
     u32 NumLevels() const {
-        if (GetType() == ImageType::Color2DMsaa || GetType() == ImageType::Color2DMsaaArray) {
+        if (IsMsaaDescriptor()) {
             return 1;
         }
         return last_level + 1;
     }
 
     u32 NumSamples() const {
-        if (GetType() == ImageType::Color2DMsaa || GetType() == ImageType::Color2DMsaaArray) {
+        if (IsMsaaDescriptor() && !ForceSingleSample()) {
             return 1u << last_level;
         }
         return 1;
@@ -257,7 +264,20 @@ struct Image {
     }
 
     ImageType GetType() const noexcept {
-        return IsCube() ? ImageType::Color2DArray : static_cast<ImageType>(type);
+        if (IsCube()) {
+            return ImageType::Color2DArray;
+        }
+        const auto raw = static_cast<ImageType>(type);
+        if (ForceSingleSample()) {
+            // fork: GOW3_MSAA=0 surfaces are single-sample, so their views are plain 2D.
+            if (raw == ImageType::Color2DMsaa) {
+                return ImageType::Color2D;
+            }
+            if (raw == ImageType::Color2DMsaaArray) {
+                return ImageType::Color2DArray;
+            }
+        }
+        return raw;
     }
 
     DataFormat GetDataFmt() const noexcept {

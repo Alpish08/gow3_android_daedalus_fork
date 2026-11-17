@@ -32,9 +32,14 @@
 
 namespace Serialization {
 /* You should increment versions below once corresponding serialization scheme is changed. */
-static constexpr u32 ShaderBinaryVersion = 7u; // gow3: interpolated integer fix (Pascal)
-static constexpr u32 ShaderMetaVersion = 7u; // gow3: ImageResource::needs_native
-static constexpr u32 PipelineKeyVersion = 5u; // gow3: Info layout (ImageResource::needs_native)
+// fork: uniform buffers change the SPIR-V, BufferSpecialization and the descriptor layout, so the
+// GOW3_UBO level is part of every version (switching it never loads mismatched cache entries).
+static const u32 ShaderBinaryVersion =
+    8u + 16u * u32(Shader::UniformBufferLevel()) + (AmdGpu::ForceSingleSample() ? 256u : 0u);
+static const u32 ShaderMetaVersion =
+    8u + 16u * u32(Shader::UniformBufferLevel()) + (AmdGpu::ForceSingleSample() ? 256u : 0u);
+static const u32 PipelineKeyVersion =
+    6u + 16u * u32(Shader::UniformBufferLevel()) + (AmdGpu::ForceSingleSample() ? 256u : 0u);
 } // namespace Serialization
 
 namespace Vulkan {
