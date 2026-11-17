@@ -100,6 +100,13 @@ mem_kb=$(awk '/^MemTotal:/{print $2}' /proc/meminfo 2>/dev/null || true)
 [ -n "$mem_kb" ] && [ "$mem_kb" -gt 0 ] && export GOW3_DEVICE_MEM_MB=${GOW3_DEVICE_MEM_MB:-$((mem_kb/1024))}
 # Select game rendering resolution directly.
 export GOW3_ANDROID_PORT=1
+# Performance fork defaults (tested on Snapdragon 8 Gen 2 / Adreno 740 with Turnip).
+# TU_DEBUG=sysmem: Turnip renders every pass directly to memory instead of GMEM tiles.
+# GOW3_MSAA=0: single-sample scene rendering instead of 2x MSAA. Keep both together: Turnip
+# sysmem with 2x MSAA breaks still-water reflections. For the upstream look, use
+# GOW3_MSAA=1 and TU_DEBUG= (empty).
+export TU_DEBUG="${TU_DEBUG-sysmem}"
+export GOW3_MSAA="${GOW3_MSAA-0}"
 # R7 forensic probe: one 32x18 RGB readback per GSR2 Vulkan stage, written
 # into android-game.log. No image substitution and no framegen/HUD changes.
 # No recurring GPU forensic probe in the stable spatial-only mode.
